@@ -1,12 +1,72 @@
 <!DOCTYPE html>
+<!-- form meta data -->
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Quiz!</title>
-  </head>
-  <body>
-    <script src="./assets/js/game.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Coding Quiz</title>
+  <link rel="stylesheet" href="./assets/css/style.css"">
+</head>
+
+<body>
+
+    <h1>Coding Quiz Challenge</h1>
+
+    <p>Try to answer all the questions before time expires.  Time will be subtracted for each incorrect answer.  Good luck!</p>
+  
+
+
+   <!-- start Quiz button -->
+   <div class="quiz">
+    <button onclick="startQuiz()" id="startQuiz">Start Quiz</button>
+</div>
+    <!-- timer -->
+<div class="timer"></div>
+
+
+    <div id="quiz"></div>
+    <div id="results"></div>
+    <div>
+       <div class="question-container" id="question">
+   </div>
+
+
+
+
+   <p id="question-title">What time is it?</p>
+
+   <input type="radio" id="option0" name="optionalAnswers" value="tenpm">
+   <label for="tenpm">10pm</label><br>
+
+   <input type="radio" id="option1" name="optionalAnswers" value="sevenpm">
+   <label for="sevenpm">7 pm</label><br>
+
+   <input type="radio" id="option2" name="optionalAnswers" value="sixpm">
+   <label for="sixpm">6pm</label><br>
+
+   <input type="radio" id="option3" name="optionalAnswers" value="noon">
+   <label for="noon">noon</label>
+
+<!-- timer -->
+
+
+  <div class="countdown">
+
+
+
+
+ 
+
+<!-- enter initials  -->
+
+<!-- database -->
+
+
+
+  <script src="./assets/js/script.js"></script>
+</body>
+
 </html>
+
+
