@@ -1,104 +1,168 @@
+// variable for your questions (array of question objects)
+const questions = [
+	{
+		title: "What is the name of a popular online repository storage of code:",
+		choices: [
+                'hhub',
+                'github',
+                'ghub',
+                "blub"
+            ],
+		answer: 'github',
+	},
+	{
+		title: "What is the best practice in coding regarding comments:", 
+		choices: ['Pleave comments before every function', 'leave comments only when the coder feels like it', 'leave comments sparsely', 'leave comments wherever helpful to direct anyone looking at the code'],
+		answer: 'Pleave comments wherever helpful to direct anyone looking at the code',
+	},
+	{
+		title: "What is the name of the command center for Macs:",
+		choices: ['terminal', 'terminal c', 'terminal a', 'terminal b'],
+		answer: 'terminal',
+	},
+	{
+		title: "What is the command in terminal to create a new folder:",
+		choices: ['mk dir', 'mkdir', 'nw fld', 'nwfld'],
+		answer: 'mkdir',
+	},
+];
 
+// variables to keep track of quiz state
+// current question index should probably be global
+let currentQuestionIndex = 0;
 
-// function {
-    
-// }
+// total time (score)
+let time = questions.length * 15;
+let timerId;
 
-// function {
+// variables to reference DOM elements
+const questionsEl = document.getElementById('questions');
+const timerEl = document.getElementById('time');
+const choicesEl = document.getElementById('choices');
+const submitBtn = document.getElementById('submit');
+const startBtn = document.getElementById('start');
+const initialsEl = document.getElementById('initials');
+const feedbackEl = document.getElementById('feedback');
 
-// }
+function startQuiz() {
+	// hide start screen
+	const startScreenEl = document.getElementById('start-screen');
+	startScreenEl.setAttribute('class', 'hide');
 
-// function {
+	// un-hide questions section
+	questionsEl.removeAttribute('class');
 
-// }
+	// start timer
+	timerId = setInterval(clockTick, 1000);
 
- //local storage
- 
+	// show starting time
+	timerEl.textContent = time;
 
- //questions
-
-
- //     console.log(questionTitle);
- let questions = [
-     {
-      title: 'What is the name of a popular online repository storage of code',
-      selections: ['hhub', 'github', 'ghub', 'purplehub'],
-      answer: 'githhub',
-    },
-  
-
-    {
-        title: 'What is the best practice in coding regarding comments?', 
-        selections: ['leave comments before every function', 'leave comments only when the coder feels like it', 'leave comments sparsely', 'leave comments wherever helpful to direct anyone looking at the code'],
-        answer: 'leave comments wherever helpful to direct anyone looking at the code',
-    },
-    {
-        title: 'What is the name of the command center for Macs?',
-        selections: ['terminal', 'terminal c', 'terminal a', 'terminal b'],
-        answer: 'terminal',
-    },
-    
-    {
-        title: 'What is the command in terminal to create a new folder?',
-        selections: ['mk dir', 'mkdir', 'nw fld', 'nwfld'],
-        answer: 'mkdir',
-    },
-    
-    {
-        title: 'What is the command in terminal to create a new file?',
-        selections: ['feel', 'touch', 'point', 'mkdir'],
-        answer: 'githhub',
-    },
-]
-
-// when the page loads
-// reach into the html and grab the corresponding area
-// getElementById or (pref) querySelector
-// let questionTitle= document.getElementById('question-title')
-// grab the first question and stick it into the elements value
-// questionTitle.value = 
-// repeat same for all options
-
-function checkAnswer(event) {
-    // look at event.
-    // find out which button was clicked
-    // compare it to the question answers
-
-    // do the thing for right answers
-    // or 
-    // do the thing for wrong answers
-
-    // move onto next question
+	// get first question
+	getQuestion();
 }
 
-// reach into the html. grab each radio button
-// listen for a click addeventListener on the radio buttons and then evaluate if the answer is right or wrong and move on
+function getQuestion() {
+	// get current question object from array
+	let currentQuestion = questions[currentQuestionIndex];
+
+	// update title with current question
+	const titleEl = document.getElementById('question-title');
+	titleEl.textContent = currentQuestion.title;
+
+	// clear out any old question choices
+	choicesEl.innerHTML = '';
+
+	// loop over choices
+	for (let i = 0; i < currentQuestion.choices.length; i++) {
+		// create new button for each choice
+		let choice = currentQuestion.choices[i];
+		let choiceNode = document.createElement('button');
+		choiceNode.setAttribute('class', 'choice');
+		choiceNode.setAttribute('value', choice);
+
+		choiceNode.textContent = choice;
+
+		// display on the page
+		choicesEl.appendChild(choiceNode);
+	}
+}
+
+function questionClick(event) {
+	let buttonEl = event.target;
+
+	// if the clicked element is not a choice button, do nothing.
+	if (!buttonEl.matches('.choice')) {
+		return;
+	}
+
+	// check if user guessed wrong
+	if (buttonEl.value !== questions[currentQuestionIndex].answer) {
+		// penalize time
+		time -= 15;
+
+		// show feedback
+		if (time < 0) {
+			// no such thing as negative time....
+			time = 0;
+		}
+
+		// display new time on page
+		timerEl.textContent = time;
+
+		feedbackEl.textContent = 'Wrong!';
+	} else {
+		feedbackEl.textContent = 'Correct!';
+	}
+
+	// flash right/wrong feedback on page for half a second
+	feedbackEl.setAttribute('class', 'feedback');
+	setTimeout(function () {
+		feedbackEl.setAttribute('class', 'feedback hide');
+	}, 500);
+
+	// move to next question
+	currentQuestionIndex++;
+
+	// check if we've run out of questions
+	if (time <= 0 || currentQuestionIndex === questions.length) {
+		quizEnd();
+	} else {
+		getQuestion();
+	}
+}
+
+function quizEnd() {
+	// stop timer
+	clearInterval(timerId);
+
+	// show end screen
+	const endScreenEl = document.getElementById('end-screen');
+	endScreenEl.removeAttribute('class');
+
+	// show final score
+	const finalScoreEl = document.getElementById('final-score');
+	finalScoreEl.textContent = time;
+
+	// hide questions section
+	questionsEl.setAttribute('class', 'hide');
+}
+
+function clockTick() {
+	// update time
+	time--;
+	timerEl.textContent = time;
+
+	// check if user ran out of time
+	if (time <= 0) {
+		quizEnd();
+	}
+}
+
+// user clicks button to start quiz
+startBtn.onclick = startQuiz;
+
+// user clicks on element containing choices
+choicesEl.onclick = questionClick;
 
 
-
-
-
-
-
-
-
-
-
-// initials
-// final score
-// wrong or correct
-
-
-//timer from https://iqcode.com/code/javascript/add-countdown-timer-to-javascript-quiz
-var count = 70;
-var interval = setInterval(function(){
-  document.getElementById('count').innerHTML=count;
-  count--;
-  if (count === 0){
-    clearInterval(interval);
-    document.getElementById('count').innerHTML='Done';
-    // or...
-    alert("You're out of time!");
-  }
-}, 1000);
-//subtract time
